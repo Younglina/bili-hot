@@ -5,7 +5,7 @@
       "src": "index.js",
       "use": "@vercel/node"
     },
-    { "src": "/public/*.json", "use": "@vercel/static" }
+    { "src": "/bili/*.json", "use": "@vercel/static" }
   ],
   "public": true,
   "routes": [
