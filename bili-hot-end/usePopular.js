@@ -112,22 +112,21 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 async function getFileData(dates) {
   let fileData = []
   const fileName = `public/bili_popular_${dates}.json`
-  const filePath = path.join(process.cwd(), `${fileName}`)
-  console.log(filePath)
+  console.log(fileName)
   if(isDevelopment){
-    const exist = fs.existsSync(filePath);
+    const exist = fs.existsSync(fileName);
     console.log(exist)
     if (exist) {
-      const results = fs.readFileSync(filePath, 'utf8');
+      const results = fs.readFileSync(fileName, 'utf8');
       console.log(`读取${fileName}文件成功`)
       fileData = JSON.parse(results)
     }
   }else{
     try{
-      const response = await axios.get(`${filePath}`);
+      const response = await axios.get(`${fileName}`);
       fileData = response.data; // 返回文件内容
     }catch(err){
-      console.error('读取文件失败:', filePath);
+      console.error('读取文件失败:', fileName);
       console.error('err:', err.message);
     }
   }
