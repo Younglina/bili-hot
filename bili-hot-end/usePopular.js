@@ -52,7 +52,7 @@ const getPopularlist = async (ctx) => {
 async function addPopularlistByDate(ctx) {
   const dates = dayjs(new Date).format('YYYYMMDD')
   const fileName = `popular/bili_popular_${dates}.json`
-  let dList = getFileData(dates, ctx)
+  let dList = ctx?getFileData(dates, ctx):[]
   if (dList.length === 0) {
     const requests = Array.from({ length: 5 }).map((_, idx) => axios.get(`https://api.bilibili.com/x/web-interface/popular?ps=20&pn=${idx + 1}`))
     const results = await Promise.all(requests)

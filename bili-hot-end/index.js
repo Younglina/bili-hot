@@ -1,6 +1,7 @@
 const koa = require('koa')
 const koaRouter = require('koa-router')
 const koaCors = require('koa-cors')
+const cron = require('node-cron');
 const { getPopularlist, addPopularlistByDate  } = require('./usePopular.js')
 
 const app = new koa()
@@ -20,6 +21,13 @@ router.get('/addPopularlistByDate', async (ctx) => {
 app.use(koaCors())
 app.use(router.routes())
 app.use(router.allowedMethods({throw: true}))
+
+
+// 创建一个每天的23:30:00执行的定时任务
+cron.schedule('30 23 * * *', () => {
+  addPopularlistByDate()
+  console.log('执行任务');
+});
 
 app.listen(3000, ()=>{
   console.log('server listen 3000')
