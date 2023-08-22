@@ -6,10 +6,12 @@
       "use": "@vercel/node"
     }
   ],
+  "public": true,
   "routes": [
     {
       "src": "/(.*)",
       "dest": "/"
-    }
+    },
+    { "src": "*.json", "use": "@vercel/static" }
   ]
 }

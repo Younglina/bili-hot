@@ -79,6 +79,10 @@ export function getPopularBarOptions(yDatas, seriesData, total) {
       axisTick: { show: false },
       data: yDatas
     },
+    animationDuration: 0,
+    animationDurationUpdate: 3000,
+    animationEasing: 'linear',
+    animationEasingUpdate: 'linear',
     xAxis: {
       type: 'value',
       max: 'dataMax',
@@ -114,10 +118,6 @@ export function getPopularBarOptions(yDatas, seriesData, total) {
         }
       }
     ],
-    animationDuration: 0,
-    animationDurationUpdate: 3000,
-    animationEasing: 'linear',
-    animationEasingUpdate: 'linear'
   }
 }
 
