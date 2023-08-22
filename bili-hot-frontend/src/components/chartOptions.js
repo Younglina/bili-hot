@@ -17,12 +17,12 @@ export function getWrodChartOptions(seriesData) {
     graphic: getGraphic(seriesData),
     series: [
       {
-        type: "wordCloud",
-        gridSize: 5,
-        sizeRange: [12, 40],
-        rotationRange: [-90, 90],
-        layoutAnimation: true,
-        shape: "circle",
+        type: "wordCloud", // 词云类型
+        gridSize: 5, // 文字间隙
+        sizeRange: [12, 40], // 文字大小范围
+        rotationRange: [-90, 90], // 文字旋转角度范围
+        layoutAnimation: true, // 生成动画
+        shape: "circle", // 词云展示的形状
         left: '0',
         top: '0',
         width: '100%',
@@ -30,9 +30,8 @@ export function getWrodChartOptions(seriesData) {
         textStyle: {
           fontFamily: 'sans-serif',
           fontWeight: 'bold',
-          // Color can be a callback function or a color string
+          // 生成随机颜色
           color: function () {
-            // Random color
             return 'rgb(' + [
               Math.round(Math.random() * 160),
               Math.round(Math.random() * 160),
@@ -40,6 +39,7 @@ export function getWrodChartOptions(seriesData) {
             ].join(',') + ')';
           }
         },
+        // hover时文字的样式
         emphasis: {
           shadowBlur: 10,
           shadowColor: "#333",
@@ -59,8 +59,8 @@ export function getPopularBarOptions(yDatas, seriesData, total) {
     },
     tooltip: {
       trigger: "axis",
-      formatter: (p)=>{
-        return `${p[0].name}: ${p[0].value}(${((p[0].value/total)*100).toFixed(1)}%)`
+      formatter: (p) => {
+        return `${p[0].name}: ${p[0].value}(${((p[0].value / total) * 100).toFixed(1)}%)`
       },
     },
     graphic: getGraphic(yDatas),
@@ -137,7 +137,7 @@ export function getPieChartOptions(legendData, seriesData) {
       data: legendData
     },
     graphic: getGraphic(seriesData),
-    series: seriesData.length >0 ?[ 
+    series: seriesData.length > 0 ? [
       {
         name: '推荐原因',
         type: 'pie',
@@ -170,7 +170,7 @@ export function getPieChartOptions(legendData, seriesData) {
   };
 }
 
-function getGraphic(data){
+function getGraphic(data) {
   return {
     type: 'text',     // 类型：文本
     left: 'center',
@@ -178,11 +178,11 @@ function getGraphic(data){
     silent: true,     // 不响应事件
     invisible: data.length > 0,   // 有数据就隐藏
     style: {
-        fill: '#9d9d9d',
-        fontWeight: 'bold',
-        text: '暂无数据',
-        fontFamily: 'Microsoft YaHei',
-        fontSize: '25px'
+      fill: '#9d9d9d',
+      fontWeight: 'bold',
+      text: '暂无数据',
+      fontFamily: 'Microsoft YaHei',
+      fontSize: '25px'
     }
   }
 }

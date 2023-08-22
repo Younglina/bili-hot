@@ -7,6 +7,7 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/bili-hot',
   plugins: [
     vue(),
     AutoImport({

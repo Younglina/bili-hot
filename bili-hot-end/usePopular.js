@@ -4,6 +4,7 @@ const fs = require('fs')
 const dayjs = require('dayjs')
 var isSameOrBefore = require('dayjs/plugin/isSameOrBefore')
 dayjs.extend(isSameOrBefore)
+require('dotenv').config();
 
 const getPopularlist = async (ctx) => {
   try {
@@ -18,7 +19,7 @@ const getPopularlist = async (ctx) => {
     }
     if (ctx.query.pn == 1) {
       for (let dates of datesInRange) {
-        const fileData = getFileData(dates, ctx)
+        const fileData = await getFileData(dates, ctx)
         if(fileData.length===0) continue
         dList = dList.concat(fileData)
         const { barYAxisDatas, barSeriesData } = formatData(dList)
@@ -28,7 +29,7 @@ const getPopularlist = async (ctx) => {
       returnData.data.chartData.barChartDatas = barChartDatas.length===0? [{barSeriesData: [],barYAxisDatas: []}] : barChartDatas
       returnData.message = '获取热门榜成功'
     } else {
-      dList = dList.concat(getFileData([datesInRange[ctx.query.pn - 1]], ctx))
+      dList = dList.concat(await getFileData([datesInRange[ctx.query.pn - 1]], ctx))
       returnData.message = '获取分页表格数据成功'
     }
     returnData.data.list = dList.slice(0, 100).map(item=>{
@@ -51,8 +52,8 @@ const getPopularlist = async (ctx) => {
 
 async function addPopularlistByDate(ctx) {
   const dates = dayjs(new Date).format('YYYYMMDD')
-  const fileName = `popular/bili_popular_${dates}.json`
-  let dList = ctx?getFileData(dates, ctx):[]
+  const fileName = `public/bili_popular_${dates}.json`
+  let dList = ctx?await getFileData(dates, ctx):[]
   if (dList.length === 0) {
     const requests = Array.from({ length: 5 }).map((_, idx) => axios.get(`https://api.bilibili.com/x/web-interface/popular?ps=20&pn=${idx + 1}`))
     const results = await Promise.all(requests)
@@ -106,24 +107,20 @@ function formatData(data) {
   }
 }
 
-function getClientIp(req) {
-  return req.headers['x-forwarded-for'] ||
-  req.connection.remoteAddress ||
-  req.socket.remoteAddress ||
-  req.connection.socket.remoteAddress;
-};
-
-function getFileData(dates, ctx) {
-  const fileName = `popular/bili_popular_${dates}.json`
-  const exist = fs.existsSync(fileName);
+const isDevelopment = process.env.NODE_ENV === 'development';
+async function getFileData(dates) {
   let fileData = []
-  if (exist) {
-    const results = fs.readFileSync(fileName, 'utf8');
-    fs.appendFile('readIps.txt', ctx.request.ip + '-' +getClientIp(ctx.req) + '/n', 'utf-8', (err) => {
-      if (err) msg = err
-    })
-    console.log(`${ctx.request.ip + '-' +getClientIp(ctx.req)},读取${fileName}文件成功`)
-    fileData = JSON.parse(results)
+  const fileName = `public/bili_popular_${dates}.json`
+  if(isDevelopment){
+    const exist = fs.existsSync(fileName);
+    if (exist) {
+      const results = fs.readFileSync(fileName, 'utf8');
+      console.log(`读取${fileName}文件成功`)
+      fileData = JSON.parse(results)
+    }
+  }else{
+    const response = await axios.get(`www.younglina.wang/public/${fileName}`);
+    fileData = response.data; // 返回文件内容
   }
   return fileData
 }
