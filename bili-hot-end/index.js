@@ -29,6 +29,6 @@ cron.schedule('30 23 * * *', () => {
   console.log('执行任务');
 });
 
-app.listen(3000, ()=>{
+app.listen(process.env.PORT || 3000, ()=>{
   console.log('server listen 3000')
 })
