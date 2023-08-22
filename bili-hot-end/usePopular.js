@@ -108,28 +108,27 @@ function formatData(data) {
   }
 }
 
-const isDevelopment = process.env.NODE_ENV === 'development';
+// const isDevelopment = process.env.NODE_ENV === 'development';
 async function getFileData(dates) {
   let fileData = []
   const fileName = `public/bili_popular_${dates}.json`
-  console.log(fileName)
-  if(isDevelopment){
-    const exist = fs.existsSync(fileName);
-    console.log(exist)
+  const filePath = path.join(process.cwd(), `${fileName}`)
+  // console.log(filePath)
+  // if(isDevelopment){
+    const exist = fs.existsSync(filePath);
     if (exist) {
-      const results = fs.readFileSync(fileName, 'utf8');
-      console.log(`读取${fileName}文件成功`)
+      const results = fs.readFileSync(filePath, 'utf8');
+      console.log(`读取${filePath}文件成功`)
       fileData = JSON.parse(results)
     }
-  }else{
-    try{
-      const response = await axios.get(`${fileName}`);
-      fileData = response.data; // 返回文件内容
-    }catch(err){
-      console.error('读取文件失败:', fileName);
-      console.error('err:', err.message);
-    }
-  }
+  // }else{
+  //   try{
+  //     const response = await axios.get(`www.younglina.wang/public/${fileName}`);
+  //     fileData = response.data; // 返回文件内容
+  //   }catch(err){
+  //     console.error('读取文件失败:', filePath, err);
+  //   }
+  // }
   return fileData
 }
 
