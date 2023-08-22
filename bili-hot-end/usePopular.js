@@ -25,7 +25,7 @@ const getPopularlist = async (ctx) => {
         barChartDatas.push({barYAxisDatas, barSeriesData})
       }
       returnData.data.chartData = formatData(dList)
-      returnData.data.chartData.barChartDatas = barChartDatas
+      returnData.data.chartData.barChartDatas = barChartDatas.length===0? [{barSeriesData: [],barYAxisDatas: []}] : barChartDatas
       returnData.message = '获取热门榜成功'
     } else {
       dList = dList.concat(getFileData([datesInRange[ctx.query.pn - 1]], ctx))
@@ -106,13 +106,23 @@ function formatData(data) {
   }
 }
 
+function getClientIp(req) {
+  return req.headers['x-forwarded-for'] ||
+  req.connection.remoteAddress ||
+  req.socket.remoteAddress ||
+  req.connection.socket.remoteAddress;
+};
+
 function getFileData(dates, ctx) {
   const fileName = `popular/bili_popular_${dates}.json`
   const exist = fs.existsSync(fileName);
   let fileData = []
   if (exist) {
     const results = fs.readFileSync(fileName, 'utf8');
-    console.log(`${ctx.request.header.origin},读取${fileName}文件成功`)
+    fs.appendFile('readIps.txt', ctx.request.ip + '-' +getClientIp(ctx.req) + '/n', 'utf-8', (err) => {
+      if (err) msg = err
+    })
+    console.log(`${ctx.request.ip + '-' +getClientIp(ctx.req)},读取${fileName}文件成功`)
     fileData = JSON.parse(results)
   }
   return fileData

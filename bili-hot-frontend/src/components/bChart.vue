@@ -1,23 +1,24 @@
 <script setup>
 import echarts from '@/utils/useEcharts.js'
-import { watch, onBeforeUnmount, ref } from 'vue'
+import { watch, onMounted, onBeforeUnmount, ref } from 'vue'
 import { getPopularBarOptions, getWrodChartOptions, getPieChartOptions } from './chartOptions.js'
 const props = defineProps({
   chartData: {},
 })
-let wordChartDiv = ref(null)
-let pieChartDiv =  ref(null)
-let barChart = ref(null)
+let wordChartDiv = null
+let pieChartDiv = null
+let barChart = null
+onMounted(()=>{
+  wordChartDiv = echarts.init(document.getElementById('wordChartDiv'))
+  pieChartDiv =  echarts.init(document.getElementById('pieChartDiv'))
+  barChart = echarts.init(document.getElementById('barChartDiv'))
+})
+
 watch(()=>props.chartData, (val)=>{
   const { barValueTotal, wordSeriesData, pieYAxisDatas, pieSeriesData, barChartDatas } = val
-  if(!wordChartDiv.value){
-    wordChartDiv.value = echarts.init(document.getElementById('wordChartDiv'))
-    pieChartDiv.value = echarts.init(document.getElementById('pieChartDiv'))
-    barChart.value = echarts.init(document.getElementById('barChartDiv'))
-  }
-  wordChartDiv.value.setOption(getWrodChartOptions(wordSeriesData))
-  pieChartDiv.value.setOption(getPieChartOptions(pieYAxisDatas, pieSeriesData))
-  barChart.value.setOption(getPopularBarOptions(barChartDatas[0].barYAxisDatas, barChartDatas[0].barSeriesData, barValueTotal), true)
+  wordChartDiv.setOption(getWrodChartOptions(wordSeriesData))
+  pieChartDiv.setOption(getPieChartOptions(pieYAxisDatas, pieSeriesData))
+  barChart.setOption(getPopularBarOptions(barChartDatas[0].barYAxisDatas, barChartDatas[0].barSeriesData, barValueTotal), true)
   animationBar(barChartDatas, barValueTotal)
   window.addEventListener('resize', handleResize)
 })
@@ -36,16 +37,16 @@ async function animationBar(datas, barValueTotal) {
         interval = null
         return
       }
-      barChart.value.setOption(getPopularBarOptions(chartData.barYAxisDatas, chartData.barSeriesData, barValueTotal))
+      barChart.setOption(getPopularBarOptions(chartData.barYAxisDatas, chartData.barSeriesData, barValueTotal))
     }
   }
   run()
 }
 
 function handleResize(){
-  pieChartDiv.value.resize();
-  wordChartDiv.value.resize();
-  barChart.value.resize();
+  pieChartDiv.resize();
+  wordChartDiv.resize();
+  barChart.resize();
 }
 
 onBeforeUnmount(() => {

@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import BChart from '@/components/bChart.vue'
-import axios from 'axios'
+import axios from '@/utils/axios'
 
 const tableData = ref({})
 const durDate = ref([new Date(), new Date()])
@@ -15,7 +15,7 @@ const getData = async (v) => {
     endDate: durDate.value[1],
     pn: v===-1?1:v,
   }
-  const res = await axios.get('http://localhost:3000/getPopularlist', { params })
+  const res = await axios.get('/getPopularlist', { params })
   const data = res.data.data
   if(v===-1){
     chartData.value = data.chartData
@@ -60,7 +60,7 @@ onMounted(async () => {
           :disabled-date="(date) => date < new Date('2023-08-12') || date > new Date()" range-separator="~"
           start-placeholder="开始日期" end-placeholder="结束日期" size="small" />
       </div>
-      <el-pagination small background layout="prev, pager, next" @current-change="getTableData" :pager-count="5"
+      <el-pagination small background layout="prev, pager, next" @current-change="getData" :pager-count="5"
         :page-size="100" :total="tableData.total" class="mt-4" />
     </div>
   </div>
