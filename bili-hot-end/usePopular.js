@@ -112,14 +112,14 @@ function formatData(data) {
 async function getFileData(dates) {
   let fileData = []
   const fileName = `public/bili_popular_${dates}.json`
-  const filePath = path.join(process.cwd(), `${fileName}`)
+  // const filePath = path.join(process.cwd(), `${fileName}`)
   // console.log(filePath)
   // if(isDevelopment){
-    const exist = fs.existsSync(filePath);
-    console.log(filePath ,exist)
+    const exist = fs.existsSync(fileName);
+    console.log(fileName ,exist)
     if (exist) {
-      const results = fs.readFileSync(filePath, 'utf8');
-      console.log(`读取${filePath}文件成功`)
+      const results = fs.readFileSync(fileName, 'utf8');
+      console.log(`读取${fileName}文件成功`)
       fileData = JSON.parse(results)
     }
   // }else{
