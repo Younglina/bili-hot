@@ -10,6 +10,7 @@ const loading = ref(true)
 const chartData = ref({})
 
 const getData = async (v) => {
+  loading.value = true
   const params = {
     startDate: durDate.value[0],
     endDate: durDate.value[1],
