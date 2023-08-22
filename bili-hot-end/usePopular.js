@@ -2,6 +2,7 @@ const { formatPopularData, popularColumns } = require('./config.js')
 const axios = require('axios')
 const fs = require('fs')
 const dayjs = require('dayjs')
+const path = require('path')
 var isSameOrBefore = require('dayjs/plugin/isSameOrBefore')
 dayjs.extend(isSameOrBefore)
 require('dotenv').config();
@@ -111,6 +112,8 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 async function getFileData(dates) {
   let fileData = []
   const fileName = `public/bili_popular_${dates}.json`
+  const path = path.join(process.cwd(), `${fileName}`)
+  console.log(path)
   if(isDevelopment){
     const exist = fs.existsSync(fileName);
     if (exist) {
@@ -119,8 +122,12 @@ async function getFileData(dates) {
       fileData = JSON.parse(results)
     }
   }else{
-    const response = await axios.get(`www.younglina.wang/public/${fileName}`);
-    fileData = response.data; // 返回文件内容
+    try{
+      const response = await axios.get(`www.younglina.wang/public/${fileName}`);
+      fileData = response.data; // 返回文件内容
+    }catch(err){
+      console.error('读取文件失败:', path, err);
+    }
   }
   return fileData
 }
