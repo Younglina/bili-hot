@@ -114,7 +114,7 @@ async function getFileData(dates) {
   const fileName = `bili/bili_popular_${dates}.json`
   // const filePath = path.join(process.cwd(), `${fileName}`)
   // console.log(filePath)
-  if(!isDevelopment){
+  if(isDevelopment){
     const exist = fs.existsSync(fileName);
     console.log(fileName ,exist)
     if (exist) {
