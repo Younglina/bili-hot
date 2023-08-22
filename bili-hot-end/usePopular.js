@@ -115,18 +115,20 @@ async function getFileData(dates) {
   const filePath = path.join(process.cwd(), `${fileName}`)
   console.log(filePath)
   if(isDevelopment){
-    const exist = fs.existsSync(fileName);
+    const exist = fs.existsSync(filePath);
+    console.log(exist)
     if (exist) {
-      const results = fs.readFileSync(fileName, 'utf8');
+      const results = fs.readFileSync(filePath, 'utf8');
       console.log(`读取${fileName}文件成功`)
       fileData = JSON.parse(results)
     }
   }else{
     try{
-      const response = await axios.get(`www.younglina.wang/public/${fileName}`);
+      const response = await axios.get(`${filePath}`);
       fileData = response.data; // 返回文件内容
     }catch(err){
-      console.error('读取文件失败:', filePath, err);
+      console.error('读取文件失败:', filePath);
+      console.error('err:', err.message);
     }
   }
   return fileData
