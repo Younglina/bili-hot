@@ -116,6 +116,7 @@ async function getFileData(dates) {
   // console.log(filePath)
   // if(isDevelopment){
     const exist = fs.existsSync(filePath);
+    console.log(filePath ,exist)
     if (exist) {
       const results = fs.readFileSync(filePath, 'utf8');
       console.log(`读取${filePath}文件成功`)
