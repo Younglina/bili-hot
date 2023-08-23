@@ -2,7 +2,7 @@ const { formatPopularData, popularColumns } = require('./config.js')
 const axios = require('axios')
 const fs = require('fs')
 const dayjs = require('dayjs')
-const path = require('path')
+// const path = require('path')
 var isSameOrBefore = require('dayjs/plugin/isSameOrBefore')
 dayjs.extend(isSameOrBefore)
 require('dotenv').config();
@@ -10,7 +10,7 @@ require('dotenv').config();
 const getPopularlist = async (ctx) => {
   try {
     const datesInRange = getDatesInRange(ctx.query);
-    let dList = [], barChartDatas=[]
+    let dList = [], barChartDatas = []
     const returnData = {
       code: 0,
       data: {
@@ -21,19 +21,19 @@ const getPopularlist = async (ctx) => {
     if (ctx.query.pn == 1) {
       for (let dates of datesInRange) {
         const fileData = await getFileData(dates, ctx)
-        if(fileData.length===0) continue
+        if (fileData.length === 0) continue
         dList = dList.concat(fileData)
         const { barYAxisDatas, barSeriesData } = formatData(dList)
-        barChartDatas.push({barYAxisDatas, barSeriesData})
+        barChartDatas.push({ barYAxisDatas, barSeriesData })
       }
       returnData.data.chartData = formatData(dList)
-      returnData.data.chartData.barChartDatas = barChartDatas.length===0? [{barSeriesData: [],barYAxisDatas: []}] : barChartDatas
+      returnData.data.chartData.barChartDatas = barChartDatas.length === 0 ? [{ barSeriesData: [], barYAxisDatas: [] }] : barChartDatas
       returnData.message = '获取热门榜成功'
     } else {
       dList = dList.concat(await getFileData([datesInRange[ctx.query.pn - 1]], ctx))
       returnData.message = '获取分页表格数据成功'
     }
-    returnData.data.list = dList.slice(0, 100).map(item=>{
+    returnData.data.list = dList.slice(0, 100).map(item => {
       item.favorite = formatNumberWithUnit(item.favorite)
       item.like_count = formatNumberWithUnit(item.like_count)
       item.share = formatNumberWithUnit(item.share)
@@ -53,8 +53,8 @@ const getPopularlist = async (ctx) => {
 
 async function addPopularlistByDate(ctx) {
   const dates = dayjs(new Date).format('YYYYMMDD')
-  const fileName = `bili/bili_popular_${dates}.json`
-  let dList = ctx?await getFileData(dates, ctx):[]
+  const fileName = `files/bili_popular_${dates}.json`
+  let dList = ctx ? await getFileData(dates, ctx) : []
   if (dList.length === 0) {
     const requests = Array.from({ length: 5 }).map((_, idx) => axios.get(`https://api.bilibili.com/x/web-interface/popular?ps=20&pn=${idx + 1}`))
     const results = await Promise.all(requests)
@@ -111,22 +111,23 @@ function formatData(data) {
 const isDevelopment = process.env.NODE_ENV === 'development';
 async function getFileData(dates) {
   let fileData = []
-  const fileName = `bili_popular_${dates}.json`
-  const filePath = path.join(process.cwd(), 'files', `${fileName}`)
-  try{
-    // if(isDevelopment){
-      const exist = fs.existsSync(filePath);
-      console.log(filePath ,exist)
+  const fileName = `bili/bili_popular_${dates}.json`
+  // const filePath = path.join(process.cwd(), 'bili', `${fileName}`)
+  // console.log(filePath)
+  try {
+    if (isDevelopment) {
+      const exist = fs.existsSync(fileName);
+      console.log(fileName, exist)
       if (exist) {
-        const results = fs.readFileSync(filePath, 'utf8');
+        const results = fs.readFileSync(fileName, 'utf8');
         console.log(`读取${fileName}文件成功`)
         fileData = JSON.parse(results)
       }
-    // }else{
-    //   const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
-    //   fileData = response.data; // 返回文件内容
-    // }
-  }catch(err){
+    } else {
+      const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
+      fileData = response.data; // 返回文件内容
+    }
+  } catch (err) {
     console.error('读取文件失败:', fileName, err.message);
   }
   return fileData
@@ -152,7 +153,7 @@ function formatNumberWithUnit(number) {
     number /= 10000;
     unitIndex++;
   }
-  
+
   const formattedNumber = number.toFixed(2);
   const decimalPart = formattedNumber.split('.')[1];
   const formattedValue = decimalPart === '00' ? number.toFixed(0) : formattedNumber;
