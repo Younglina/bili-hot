@@ -34,11 +34,11 @@ const getPopularlist = async (ctx) => {
       returnData.message = '获取分页表格数据成功'
     }
     returnData.data.list = dList.slice(0, 100).map(item => {
-      item.favorite = formatNumberWithUnit(item.favorite)
-      item.like_count = formatNumberWithUnit(item.like_count)
-      item.share = formatNumberWithUnit(item.share)
-      item.view = formatNumberWithUnit(item.view)
-      item.coin = formatNumberWithUnit(item.coin)
+      item.favorite = formatNumberWithUnit(item.favorite || 0)
+      item.like_count = formatNumberWithUnit(item.like_count || 0)
+      item.share = formatNumberWithUnit(item.share || 0)
+      item.view = formatNumberWithUnit(item.view || 0)
+      item.coin = formatNumberWithUnit(item.coin || 0)
       return item
     })
     return returnData
@@ -116,7 +116,7 @@ async function getFileData(dates) {
   let fileData = []
   let fileName = ''
   try {
-    if (isDevelopment) {
+    if (!isDevelopment) {
       fileName = `bili/bili_popular_${dates}.json`
       const exist = fs.existsSync(fileName);
       if (exist) {
@@ -129,6 +129,7 @@ async function getFileData(dates) {
       // const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
       // fileData = response.data; // 返回文件内容
       const testFile = await require(`./bili_popular_${dates}.js`)
+      console.log(testFile[0])
       fileData = testFile; // 返回文件内容
     }
   } catch (err) {
@@ -158,9 +159,9 @@ function formatNumberWithUnit(number) {
     unitIndex++;
   }
 
-  const formattedNumber = number.toFixed(2);
+  const formattedNumber = (number||0).toFixed(2);
   const decimalPart = formattedNumber.split('.')[1];
-  const formattedValue = decimalPart === '00' ? number.toFixed(0) : formattedNumber;
+  const formattedValue = decimalPart === '00' ? (number||0).toFixed(0) : formattedNumber;
 
   return formattedValue + units[unitIndex];
 }

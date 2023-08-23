@@ -1,7 +1,6 @@
 import echarts from '@/utils/useEcharts.js'
 import 'echarts-wordcloud';
 
-
 export function getWrodChartOptions(seriesData) {
   return {
     title: {
