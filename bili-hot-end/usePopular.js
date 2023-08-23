@@ -122,11 +122,10 @@ async function getFileData(dates) {
         fileData = JSON.parse(results)
       }
     } else {
-      fileName = `bili/bili_popular_${dates}.json`
-      const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
-      fileData = response.data; // 返回文件内容
+      // fileName = `bili/bili_popular_${dates}.json`
+      // const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
+      // fileData = response.data; // 返回文件内容
       const testFile = await require(`./bili_popular_${dates}.js`)
-      console.log(testFile[0])
       fileData = testFile; // 返回文件内容
     }
   } catch (err) {
