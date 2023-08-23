@@ -53,7 +53,7 @@ const getPopularlist = async (ctx) => {
 
 async function addPopularlistByDate(ctx) {
   const dates = dayjs(new Date).format('YYYYMMDD')
-  const fileName = `public/bili_popular_${dates}.json`
+  const fileName = `bili/bili_popular_${dates}.json`
   let dList = ctx?await getFileData(dates, ctx):[]
   if (dList.length === 0) {
     const requests = Array.from({ length: 5 }).map((_, idx) => axios.get(`https://api.bilibili.com/x/web-interface/popular?ps=20&pn=${idx + 1}`))
@@ -111,24 +111,23 @@ function formatData(data) {
 const isDevelopment = process.env.NODE_ENV === 'development';
 async function getFileData(dates) {
   let fileData = []
-  const fileName = `bili/bili_popular_${dates}.json`
-  // const filePath = path.join(process.cwd(), `${fileName}`)
-  // console.log(filePath)
-  if(isDevelopment){
-    const exist = fs.existsSync(fileName);
-    console.log(fileName ,exist)
-    if (exist) {
-      const results = fs.readFileSync(fileName, 'utf8');
-      console.log(`读取${fileName}文件成功`)
-      fileData = JSON.parse(results)
-    }
-  }else{
-    try{
-      const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
-      fileData = response.data; // 返回文件内容
-    }catch(err){
-      console.error('读取文件失败:', fileName, err.message);
-    }
+  const fileName = `bili_popular_${dates}.json`
+  const filePath = path.join(process.cwd(), 'files', `${fileName}`)
+  try{
+    // if(isDevelopment){
+      const exist = fs.existsSync(filePath);
+      console.log(filePath ,exist)
+      if (exist) {
+        const results = fs.readFileSync(filePath, 'utf8');
+        console.log(`读取${fileName}文件成功`)
+        fileData = JSON.parse(results)
+      }
+    // }else{
+    //   const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
+    //   fileData = response.data; // 返回文件内容
+    // }
+  }catch(err){
+    console.error('读取文件失败:', fileName, err.message);
   }
   return fileData
 }
