@@ -113,7 +113,7 @@ async function getFileData(dates) {
   let fileData = []
   let fileName = ''
   try {
-    if (isDevelopment) {
+    if (!isDevelopment) {
       fileName = `bili/bili_popular_${dates}.json`
       const exist = fs.existsSync(fileName);
       if (exist) {
@@ -122,18 +122,13 @@ async function getFileData(dates) {
         fileData = JSON.parse(results)
       }
     } else {
-      fileName = `bili/bili_popular_${dates}.json`
-      const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
-      fileData = response.data; // 返回文件内容
-
-      const filePath = path.join(process.cwd(), 'bili-hot-end/files', `bili_popular_${dates}.js`)
-      const testFile = await require(filePath)
-      console.log(testFile)
-      const filePath2 = path.join(process.cwd(), 'files', `bili_popular_${dates}.js`)
-      console.log(filePath2)
-      const testFile2 = await require(filePath2)
-      console.log(testFile2)
-    
+      // fileName = `bili/bili_popular_${dates}.json`
+      // const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
+      // fileData = response.data; // 返回文件内容
+      fileName = path.join(process.cwd(), 'bili-hot-end/files', `bili_popular_${dates}.js`)
+      const testFile = await require(fileName)
+      console.log(`读取${fileName}文件成功`)
+      fileData = testFile; // 返回文件内容
     }
   } catch (err) {
     console.error('读取文件失败:', fileName, err.message);
