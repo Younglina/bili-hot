@@ -122,12 +122,12 @@ async function getFileData(dates) {
         fileData = JSON.parse(results)
       }
     } else {
-      // fileName = `bili/bili_popular_${dates}.json`
-      // const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
-      // fileData = response.data; // 返回文件内容
+      fileName = `bili/bili_popular_${dates}.json`
+      const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
+      fileData = response.data; // 返回文件内容
       fileName = path.join(process.cwd(), 'bili-hot-end/files', `bili_popular_${dates}.js`)
       const testFile = await require(fileName)
-      console.log(`读取${fileName}文件成功`)
+      console.log(testFile)
       fileData = testFile; // 返回文件内容
     }
   } catch (err) {
