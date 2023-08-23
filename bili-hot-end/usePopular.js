@@ -111,19 +111,22 @@ function formatData(data) {
 const isDevelopment = process.env.NODE_ENV === 'development';
 async function getFileData(dates) {
   let fileData = []
-  const fileName = `bili/bili_popular_${dates}.json`
-  // const filePath = path.join(process.cwd(), 'bili', `${fileName}`)
-  // console.log(filePath)
+  let fileName = ''
   try {
-    if (isDevelopment) {
+    if (!isDevelopment) {
+      fileName = `bili/bili_popular_${dates}.json`
       const exist = fs.existsSync(fileName);
-      console.log(fileName, exist)
       if (exist) {
         const results = fs.readFileSync(fileName, 'utf8');
         console.log(`读取${fileName}文件成功`)
         fileData = JSON.parse(results)
       }
     } else {
+      fileName = `files/bili_popular_${dates}.js`
+      const testFile = await require(`./${fileName}`)
+      console.log(testFile)
+      // const filePath = path.join(process.cwd(), 'bili', `${fileName}`)
+      // console.log(filePath)
       const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
       fileData = response.data; // 返回文件内容
     }
