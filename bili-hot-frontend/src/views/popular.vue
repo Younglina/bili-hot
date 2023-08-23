@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import BChart from '@/components/bChart.vue'
 import axios from '@/utils/axios'
+import dayjs from 'dayjs'
 
 const tableData = ref({})
 const durDate = ref([new Date(), new Date()])
@@ -12,8 +13,8 @@ const chartData = ref({})
 const getData = async (v) => {
   loading.value = true
   const params = {
-    startDate: durDate.value[0],
-    endDate: durDate.value[1],
+    startDate: dayjs(durDate.value[0]).format('YYYYMMDD'),
+    endDate: dayjs(durDate.value[1]).format('YYYYMMDD'),
     pn: v===-1?1:v,
   }
   const res = await axios.get('/getPopularlist', { params })

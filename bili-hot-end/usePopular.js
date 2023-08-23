@@ -116,7 +116,7 @@ async function getFileData(dates) {
   let fileData = []
   let fileName = ''
   try {
-    if (!isDevelopment) {
+    if (isDevelopment) {
       fileName = `bili/bili_popular_${dates}.json`
       const exist = fs.existsSync(fileName);
       if (exist) {
@@ -128,8 +128,8 @@ async function getFileData(dates) {
       // fileName = `bili/bili_popular_${dates}.json`
       // const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
       // fileData = response.data; // 返回文件内容
-      const testFile = await require(`./bili_popular_${dates}.js`)
-      console.log(testFile[0])
+      let testFile = await require(`./bili_popular_${dates}.js`)
+      testFile = JSON.parse(JSON.stringify(testFile))
       fileData = testFile; // 返回文件内容
     }
   } catch (err) {
