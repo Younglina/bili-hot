@@ -113,7 +113,7 @@ async function getFileData(dates) {
   let fileData = []
   let fileName = ''
   try {
-    if (!isDevelopment) {
+    if (isDevelopment) {
       fileName = `bili/bili_popular_${dates}.json`
       const exist = fs.existsSync(fileName);
       if (exist) {
