@@ -1,12 +1,15 @@
 const koa = require('koa')
 const koaRouter = require('koa-router')
+const static = require('koa-static');
 const koaCors = require('koa-cors')
 const cron = require('node-cron');
 const { exec } = require('child_process');
 const { getPopularlist, addPopularlistByDate  } = require('./usePopular.js')
+const path = require('path')
 
 const app = new koa()
 const router = new koaRouter()
+const staticPath = path.join(__dirname, '../bili-hot-frontend/dist');
 
 router.get('/getPopularlist', async (ctx) => {
   const res = await getPopularlist(ctx)
@@ -22,7 +25,7 @@ router.get('/addPopularlistByDate', async (ctx) => {
 app.use(koaCors())
 app.use(router.routes())
 app.use(router.allowedMethods({throw: true}))
-
+app.use(static(staticPath))
 
 // 创建一个每天的23:30:00执行的定时任务
 cron.schedule('30 23 * * *', () => {

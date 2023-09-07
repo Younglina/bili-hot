@@ -5,7 +5,7 @@ import axios from '@/utils/axios'
 import dayjs from 'dayjs'
 
 const tableData = ref({})
-const durDate = ref([new Date(), new Date()])
+const durDate = ref([dayjs().subtract(1, 'day'),dayjs().subtract(1, 'day')])
 const loading = ref(true)
 
 const chartData = ref({})
