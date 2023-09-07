@@ -2,7 +2,6 @@ const { formatPopularData, popularColumns } = require('./config.js')
 const axios = require('axios')
 const fs = require('fs')
 const dayjs = require('dayjs')
-const path = require('path')
 var isSameOrBefore = require('dayjs/plugin/isSameOrBefore')
 dayjs.extend(isSameOrBefore)
 require('dotenv').config();
@@ -65,9 +64,6 @@ async function addPopularlistByDate(ctx) {
     fs.writeFile(fileName, JSON.stringify(dList), 'utf-8', (err) => {
       if (err) msg = err
     })
-    fs.writeFile(`bili_popular_${dates}.js`, `module.exports = ${JSON.stringify(dList)}`, 'utf-8', (err) => {
-      if (err) msg = err
-    })
     return {
       code: msg ? -1 : 0,
       message: msg || `存入${dates}文件成功`
@@ -111,26 +107,16 @@ function formatData(data) {
   }
 }
 
-const isDevelopment = process.env.NODE_ENV === 'development';
 async function getFileData(dates) {
   let fileData = []
   let fileName = ''
   try {
-    if (isDevelopment) {
-      fileName = `bili/bili_popular_${dates}.json`
-      const exist = fs.existsSync(fileName);
-      if (exist) {
-        const results = fs.readFileSync(fileName, 'utf8');
-        console.log(`读取${fileName}文件成功`)
-        fileData = JSON.parse(results)
-      }
-    } else {
-      // fileName = `bili/bili_popular_${dates}.json`
-      // const response = await axios.get(`https://younglina-1256042946.cos.ap-nanjing.myqcloud.com/${fileName}`);
-      // fileData = response.data; // 返回文件内容
-      let testFile = await require(`./bili_popular_${dates}.js`)
-      testFile = JSON.parse(JSON.stringify(testFile))
-      fileData = testFile; // 返回文件内容
+    fileName = `bili/bili_popular_${dates}.json`
+    const exist = fs.existsSync(fileName);
+    if (exist) {
+      const results = fs.readFileSync(fileName, 'utf8');
+      console.log(`读取${fileName}文件成功`)
+      fileData = JSON.parse(results)
     }
   } catch (err) {
     console.error('读取文件失败:', fileName, err.message);
