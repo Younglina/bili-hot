@@ -34,12 +34,12 @@ cron.schedule('30 23 * * *', () => {
 
 // 定义提交函数
 function commitToGit() {
-  exec('git add . && git commit -m "定时提交" && git push', (error, stdout, stderr) => {
+  exec('git add . && git commit -m "ci: 定时提交" && git push', (error, stdout, stderr) => {
     if (error) {
       console.error(`提交到Git仓库时出错：${error.message}`);
       return;
     }
-    console.log('提交成功');
+    console.log('ci: 定时提交');
   });
 }
 
